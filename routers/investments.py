@@ -5,7 +5,7 @@ from datetime import datetime
 
 router = APIRouter()
 
-@router.post("investment/invest")
+@router.post("/investment/invest")
 def invest(investment : InvestmentCreate):
     if data.balanceW < investment.amount:
         raise HTTPException(status_code= 400, detail= "Not enough balance")
