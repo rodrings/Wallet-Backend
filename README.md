@@ -1,57 +1,185 @@
-Descripción General
-Este proyecto consiste en una interfaz de programación de aplicaciones (API) robusta diseñada para la gestión de finanzas personales. Implementa un motor de cálculo de rendimientos variables en tiempo real, permitiendo la administración de activos líquidos e inversiones de renta fija a través de una arquitectura orientada a servicios.
+# Wallet Backend API
 
-Arquitectura y Principios de Diseño
-El sistema ha sido desarrollado bajo principios de modularidad y escalabilidad, utilizando las siguientes estrategias de ingeniería:
+Backend de una billetera virtual desarrollado con FastAPI, orientado a simular el funcionamiento de una aplicación financiera. Permite gestionar depósitos, gastos e inversiones mediante una API REST estructurada, aplicando buenas prácticas de desarrollo backend como separación de modelos, validación de datos y arquitectura modular.
 
-Arquitectura de Capas (Routers): Segregación de responsabilidades mediante el uso de APIRouter, dividiendo la lógica de negocio en módulos de Inversiones, Transacciones y Estado de Cuenta (Wallet).
+---
 
-Modelado de Datos con Pydantic: Implementación de esquemas de validación estrictos para garantizar la integridad de los datos de entrada y salida, asegurando que cada transacción cumpla con los tipos de datos requeridos.
+## Descripción
 
-Normalización de Transacciones: Aplicación de un modelo unificado de Transaccion que consolida diversos orígenes de datos (Depósitos, Gastos, Liquidaciones) en un registro histórico coherente.
+Este proyecto implementa una API backend para una billetera digital donde los usuarios pueden administrar su dinero de forma simple:
 
-Gestión de Estado en Memoria: Uso de un repositorio de datos centralizado para la persistencia volátil durante el ciclo de vida de la aplicación.
+* Depositar fondos
+* Registrar gastos
+* Crear inversiones
+* Consultar el estado actual de la billetera
 
-Especificaciones Técnicas
-1. Motor de Rendimientos (Real-Time Accrual)
-A diferencia de sistemas estáticos, esta API calcula los intereses acumulados de forma dinámica. Utiliza la diferencia de marcas temporales (timestamps) para determinar el rendimiento exacto al segundo, aplicando la fórmula de interés simple sobre el capital expuesto.
+El sistema está diseñado siguiendo principios comunes en el desarrollo de APIs modernas, separando los datos de entrada de aquellos generados por el sistema, como identificadores y marcas de tiempo.
 
-2. Control de Flujo de Fondos
-El sistema implementa validaciones de lógica financiera:
+---
 
-Verificación de Solvencia: Los gastos e inversiones están sujetos a la disponibilidad de saldo en el balance.
+## Objetivo
 
-Ciclo de Inversión: Proceso completo desde la detracción del balance principal, la generación de intereses, hasta la liquidación y retorno del capital con su respectiva utilidad.
+El objetivo del proyecto es aplicar conceptos fundamentales de desarrollo backend:
 
-Documentación de Endpoints
-Gestión de Estado
-GET /wallet: Retorna un objeto complejo que consolida el balance disponible, capital invertido, intereses devengados acumulados y el historial de transacciones reciente.
+* Diseño de APIs REST
+* Modelado de datos
+* Separación de responsabilidades
+* Validación automática de datos
+* Simulación de lógica de negocio financiera
 
-GET /history: Punto de acceso al registro histórico con soporte para parámetros de consulta (query parameters) que permiten filtrar por tipo de operación (deposit, expense, investment).
+---
 
-Operaciones Financieras
-POST /deposit: Registra el ingreso de capital al sistema desde un origen externo.
+## Tecnologías utilizadas
 
-POST /expense: Ejecuta la salida de fondos, requiriendo una descripción de la transacción.
+* Python
+* FastAPI
+* Pydantic
+* Uvicorn
 
-POST /investment/invest: Inicia un nuevo activo de inversión, asignando un identificador único y una tasa de rendimiento específica.
+---
 
-POST /investment/close/{id}: Realiza el cierre técnico de una inversión. Calcula el monto final (capital + intereses) y reintegra los fondos al balance de libre disponibilidad.
+## Estructura del proyecto
 
-Requisitos e Instalación
-Requisitos del Sistema
-Python 3.10 o superior.
+```id="x0t6dc"
+app/
+│
+├── main.py
+├── models.py
+├── data.py
+│
+└── routers/
+    ├── wallet.py
+    ├── expenses.py
+    └── investments.py
+```
 
-Entorno de ejecución para FastAPI (Uvicorn).
+La aplicación está organizada de forma modular, separando rutas, modelos y lógica de datos para facilitar el mantenimiento y la escalabilidad.
 
-Instalación
-Clonar el repositorio.
+---
 
-Instalar las dependencias core:
+## Instalación y ejecución
 
-Bash
-pip install fastapi uvicorn pydantic
-Iniciar el servicio:
+1. Clonar el repositorio:
 
-Bash
-uvicorn main:app --host 0.0.0.0 --port 8000
+```id="q76vsl"
+git clone https://github.com/rodrings/Wallet-Backend.git
+cd Wallet-Backend
+```
+
+2. Crear entorno virtual:
+
+```id="r9ccfo"
+python -m venv venv
+.\venv\Scripts\activate
+```
+
+3. Instalar dependencias:
+
+```id="k1b8bg"
+pip install fastapi uvicorn
+```
+
+4. Ejecutar el servidor:
+
+```id="n7o9fx"
+uvicorn main:app --reload
+```
+
+---
+
+## Endpoints principales
+
+### Wallet
+
+* `GET /wallet`
+  Obtiene el estado actual de la billetera.
+
+---
+
+### Depósitos
+
+* `POST /deposit`
+
+```json id="qrcw6o"
+{
+  "amount": 100,
+  "origin": "salary"
+}
+```
+
+---
+
+### Gastos
+
+* `POST /expense`
+
+```json id="t0ue19"
+{
+  "amount": 50,
+  "description": "food"
+}
+```
+
+---
+
+### Inversiones
+
+* `POST /invest`
+
+```json id="8dqsyg"
+{
+  "amount": 200,
+  "rate": 0.05
+}
+```
+
+---
+
+## Ejemplo de respuesta
+
+```json id="y6zh3f"
+{
+  "balance": 850,
+  "investments": [
+    {
+      "id": 1,
+      "amount": 200,
+      "rate": 0.05,
+      "start": "2026-03-17T18:22:10"
+    }
+  ]
+}
+```
+
+---
+
+## Testing
+
+La API puede probarse mediante:
+
+* Documentación interactiva (Swagger):
+  http://127.0.0.1:8000/docs
+
+* Thunder Client dentro de Visual Studio Code
+
+---
+
+## Posibles mejoras
+
+* Persistencia con base de datos (PostgreSQL o SQLite)
+* Autenticación de usuarios mediante JWT
+* Cálculo dinámico del balance incluyendo rendimientos
+* Implementación de distintos tipos de inversiones
+* Despliegue en la nube
+
+---
+
+## Conclusión
+
+Este proyecto constituye una base sólida para el desarrollo de un backend de tipo financiero, incorporando prácticas utilizadas en entornos profesionales y permitiendo su extensión hacia sistemas más complejos.
+
+---
+
+## Autor
+
+Rodrigo García Solá
