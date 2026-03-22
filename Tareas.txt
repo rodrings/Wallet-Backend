@@ -1,0 +1,2 @@
+Ahora hay que generar que la wallet tenga todos los valores correctos. 
+Calcular las inversiones, tal que la rentabilidad sea por dia.
