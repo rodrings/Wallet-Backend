@@ -164,16 +164,6 @@ La API puede probarse mediante:
 
 ---
 
-## Posibles mejoras
-
-* Persistencia con base de datos (PostgreSQL o SQLite)
-* Autenticación de usuarios mediante JWT
-* Cálculo dinámico del balance incluyendo rendimientos
-* Implementación de distintos tipos de inversiones
-* Despliegue en la nube
-
----
-
 ## Conclusión
 
 Este proyecto constituye una base sólida para el desarrollo de un backend de tipo financiero, incorporando prácticas utilizadas en entornos profesionales y permitiendo su extensión hacia sistemas más complejos.
